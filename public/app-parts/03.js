@@ -7,7 +7,9 @@ function overlaps(a, b) {
 }
 
 function hasConflict(event, candidates = state.events) {
-  if (event.conflictGroup) return true;
+  // Conflito é sempre recalculado a partir das decisões atuais do usuário.
+  // O antigo conflictGroup da planilha é apenas histórico e não deve manter
+  // um conflito depois que uma das palestras passa para Não vou, Talvez etc.
   if (!PHYSICAL_INTEREST_STATUSES.has(decision(event))) return false;
   return candidates.some(other =>
     other.id !== event.id &&
