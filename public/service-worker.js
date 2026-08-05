@@ -1,10 +1,11 @@
-const CACHE_NAME = 'riw-agenda-shell-v2';
+const CACHE_NAME = 'riw-agenda-shell-v4';
 const SHELL = [
   './',
   './index.html',
   './style.css',
-  './app.js',
-  './config.js',
+  './app.js?v=20260805-2',
+  './api-bridge.js?v=20260805-2',
+  './config.js?v=20260805-2',
   './manifest.webmanifest',
   './icon-180.png',
   './icon-192.png',
@@ -28,6 +29,11 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const requestUrl = new URL(event.request.url);
   if (requestUrl.origin !== self.location.origin) return;
+
+  if (requestUrl.pathname.startsWith('/api/')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
 
   if (event.request.mode === 'navigate') {
     event.respondWith(
