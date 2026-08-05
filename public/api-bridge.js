@@ -1,4 +1,9 @@
 (function installSameOriginApiBridge() {
+  const LEGACY_BACKEND_KEY = 'riw2026:backendUrl';
+
+  try { localStorage.removeItem(LEGACY_BACKEND_KEY); } catch (error) {}
+  window.RIW_CONFIG = Object.freeze({apiUrl: ''});
+
   function proxyApiCall(action, params = {}) {
     const isWrite = String(action).toLowerCase() === 'updateevent';
     const url = new URL('/api/', window.location.origin);
@@ -10,7 +15,7 @@
     };
 
     if (isWrite) {
-      options.headers['Content-Type'] = 'application/json';
+      options.headers['Content-Type']'] = 'application/json';
       options.body = JSON.stringify({api: action, ...params});
     } else {
       url.searchParams.set('api', action);
@@ -36,10 +41,18 @@
     });
   }
 
-  window.apiCall = proxyApiCall;
-  try { apiCall = proxyApiCall; } catch (error) {}
+  function startSameOriginConnection() {
+    window.apiCall = proxyApiCall;
+    try { apiCall = proxyApiCall; } catch (error) {}
+    try { hideBackendSetup(); } catch (error) {}
+    if (typeof loadData === 'function' && typeof initialProfileSlug === 'function') {
+      loadData(initialProfileSlug());
+    }
+  }
 
-  if (typeof loadData === 'function' && typeof initialProfileSlug === 'function') {
-    loadData(initialProfileSlug());
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startSameOriginConnection, {once: true});
+  } else {
+    startSameOriginConnection();
   }
 })();
