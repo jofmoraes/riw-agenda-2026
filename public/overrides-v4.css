@@ -1,4 +1,4 @@
-/* Ajustes de onboarding e clareza — v4 */
+/* Ajustes de onboarding, clareza e layout — v5 */
 .profile-criteria-button {
   display: inline-flex;
   align-items: center;
@@ -95,6 +95,34 @@
   color: #fff;
   font-weight: 800;
 }
+
+/* O cabeçalho do dia deve ocupar espaço real no calendário, nunca flutuar
+   sobre os eventos. A regra anterior usava sticky no desktop e produzia
+   sobreposição ao rolar ou ao capturar a página inteira. */
+.calendar-header {
+  position: static !important;
+  top: auto !important;
+  z-index: 1;
+}
+
+/* No desktop, o cabeçalho principal também permanece no fluxo normal.
+   Assim, filtros, resumo, legenda e agenda nunca passam por baixo dele. */
+@media (min-width: 861px) {
+  .topbar {
+    position: static;
+    top: auto;
+  }
+  .filters-panel,
+  .summary,
+  .legend,
+  .calendar-shell {
+    position: relative;
+  }
+  .filters-panel { z-index: 3; }
+  .summary, .legend { z-index: 2; }
+  .calendar-shell { z-index: 1; }
+}
+
 @media (max-width: 620px) {
   .profile-criteria-button { font-size: .67rem; }
   .event-actions { align-items: end; }
