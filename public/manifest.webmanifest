@@ -1,0 +1,53 @@
+{
+  "id": "./",
+  "name": "RIW 2026 — Agenda",
+  "short_name": "RIW Agenda",
+  "description": "Agenda personalizada do Rio Innovation Week 2026.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#efeee9",
+  "theme_color": "#44365f",
+  "categories": [
+    "productivity",
+    "events"
+  ],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Agenda do João",
+      "short_name": "João",
+      "url": "./?perfil=joao&vista=list"
+    },
+    {
+      "name": "Agenda da Flora",
+      "short_name": "Flora",
+      "url": "./?perfil=flora&vista=list"
+    },
+    {
+      "name": "Agenda do Diogo",
+      "short_name": "Diogo",
+      "url": "./?perfil=diogo&vista=list"
+    }
+  ]
+}

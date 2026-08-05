@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="#44365f" name="theme-color"/>
+<meta content="RIW 2026 — Agenda" name="application-name"/>
+<meta content="RIW Agenda" name="apple-mobile-web-app-title"/>
+<link href="icon-180.png" rel="apple-touch-icon" sizes="180x180"/>
+
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/><meta content="yes" name="mobile-web-app-capable"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="default" name="apple-mobile-web-app-status-bar-style"/><link href="manifest.webmanifest" rel="manifest"/><link href="style.css" rel="stylesheet"/></head>
+<body>
+<main class="app">
+<header class="topbar" id="topbar">
+<div class="brand-row">
+<div class="brand-copy">
+<span class="eyebrow">Rio Innovation Week 2026</span>
+<h1 class="title" id="profileTitle">Agenda</h1>
+<p class="subtitle">Programação e decisões sincronizadas com a base do evento.</p>
+</div>
+<button aria-label="Trocar perfil" class="profile-button" id="profileButton" type="button">
+<span class="profile-initial" id="profileInitial">P</span>
+<span class="profile-name" id="profileName">Perfil</span>
+<span class="profile-chevron">▾</span>
+</button>
+</div>
+<div class="nav-row">
+<div aria-label="Modo de visualização" class="view-toggle">
+<button class="view-button active" id="listViewButton" type="button">Lista</button>
+<button class="view-button" id="gridViewButton" type="button">Agenda</button>
+</div>
+<button aria-controls="filtersPanel" aria-expanded="false" class="filters-toggle" id="filtersToggle" type="button">
+          Filtros <span class="filter-count" id="filterCount">0</span>
+</button>
+</div>
+<div aria-label="Dias do evento" class="day-picker" id="dayPicker"></div>
+</header>
+<section aria-label="Instalar aplicativo" class="install-banner" hidden="" id="installBanner">
+<div class="install-copy">
+<strong>Instalar como aplicativo</strong>
+<span>Abre em janela própria, sem a barra de endereço do navegador.</span>
+</div>
+<button class="install-action" id="installAction" type="button">Instalar</button>
+<button aria-label="Dispensar sugestão" class="install-dismiss" id="installDismiss" type="button">×</button>
+</section>
+<section aria-label="Filtros da agenda" class="filters-panel" id="filtersPanel">
+<div class="filters-head">
+<h2>Filtrar programação</h2>
+<button class="clear-filters" id="clearFilters" type="button">Limpar filtros</button>
+</div>
+<div class="controls-grid">
+<div class="control">
+<label class="control-label" for="search">Busca livre</label>
+<input id="search" placeholder="Título, palestrante, empresa ou descrição" type="search"/>
+</div>
+<div class="control">
+<label class="control-label" for="tagFilter">Tag</label>
+<select id="tagFilter"><option value="">Todas as tags</option></select>
+<span class="control-hint">Lista baseada nas tags já cadastradas na programação.</span>
+</div>
+<div class="control">
+<label class="control-label" for="priority">Prioridade atribuída</label>
+<select id="priority">
+<option value="">Todas</option>
+<option value="Bloquear agenda">Bloquear agenda</option>
+<option value="Prioridade alta">Prioridade alta ou maior</option>
+<option value="Vale encaixar">Vale encaixar ou maior</option>
+<option value="Somente se houver tempo">Somente se houver tempo ou maior</option>
+</select>
+</div>
+<div class="control">
+<label class="control-label" for="potential">Aderência estimada</label>
+<select id="potential">
+<option value="">Todas</option>
+<option value="Muito alto">Muito alta</option>
+<option value="Alto+">Alta ou maior</option>
+<option value="Médio+">Média ou maior</option>
+</select>
+</div>
+<div class="control">
+<label class="control-label" for="audioRoom">Sala de áudio</label>
+<select id="audioRoom"><option value="">Todas as salas</option></select>
+</div>
+<div class="control">
+<label class="control-label" for="timeMode">Em relação a agora</label>
+<select id="timeMode">
+<option value="">Mostrar todos</option>
+<option value="hideEnded">Ocultar os que já terminaram</option>
+<option value="hideStarted">Ocultar os que já iniciaram</option>
+</select>
+</div>
+<div class="control">
+<label class="control-label" for="timeFrom">A partir de</label>
+<input id="timeFrom" step="300" type="time"/>
+</div>
+<div class="control">
+<label class="control-label" for="timeTo">Até</label>
+<input id="timeTo" step="300" type="time"/>
+</div>
+</div>
+<div class="status-section">
+<div class="filters-head" style="margin-bottom:6px">
+<span class="section-label" style="margin:0">Nível de interesse / decisão</span>
+<button class="clear-filters" id="toggleAllStatuses" type="button">Selecionar todos</button>
+</div>
+<div class="status-checks" id="statusChecks"></div>
+</div>
+<div class="control-actions">
+<button class="utility-button" id="newPotential" type="button">Revisar não analisados de interesse</button>
+<button class="utility-button" id="expandAll" type="button">Expandir detalhes</button>
+<button class="utility-button" id="onlyScheduled" type="button">Ocultar sem horário</button>
+<button class="utility-button" id="onlyConflicts" type="button">Só conflitos de horário</button>
+</div>
+</section>
+<section aria-label="Resumo dos resultados" class="summary" id="summary"></section>
+<section aria-label="Legenda de cores" class="legend" id="legend"></section>
+<section aria-live="polite" id="content"><div class="loading">Carregando agenda…</div></section>
+</main>
+<div aria-labelledby="setupTitle" aria-modal="true" class="setup-backdrop" id="setupBackdrop" role="dialog">
+<section class="setup-modal">
+<h2 id="setupTitle">Conectar à agenda</h2>
+<p>Na primeira abertura, cole o endereço <b>/exec</b> da implantação atual do Google Apps Script. Ele fica salvo somente neste aparelho.</p>
+<label for="apiUrlInput">Endereço do backend</label>
+<input autocomplete="url" id="apiUrlInput" inputmode="url" placeholder="https://script.google.com/macros/s/.../exec" type="url"/>
+<div class="setup-actions">
+<button class="primary" id="saveApiUrl" type="button">Conectar</button>
+</div>
+<p aria-live="polite" class="setup-error" id="setupError"></p>
+</section>
+</div>
+<div aria-labelledby="modalTitle" aria-modal="true" class="modal-backdrop" id="modalBackdrop" role="dialog">
+<section class="modal">
+<div class="modal-head">
+<h2 id="modalTitle"></h2>
+<button aria-label="Fechar detalhes" class="modal-close" id="modalClose" type="button">×</button>
+</div>
+<div id="modalContent"></div>
+</section>
+</div>
+<div aria-labelledby="profileDialogTitle" aria-modal="true" class="profile-backdrop" id="profileBackdrop" role="dialog">
+<section class="profile-modal">
+<h2 id="profileDialogTitle">Escolha o perfil</h2>
+<p>A escolha fica salva neste aparelho. Cada pessoa mantém decisões e comentários próprios.</p>
+<div class="profile-grid" id="profileGrid"></div>
+</section>
+</div>
+
+<script defer="" src="config.js"></script><script defer="" src="app.js"></script></body>
+</html>
