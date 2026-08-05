@@ -1,11 +1,16 @@
-const CACHE_NAME = 'riw-agenda-shell-v5';
+const CACHE_NAME = 'riw-agenda-shell-v6';
 const SHELL = [
   './',
   './index.html',
-  './style.css',
-  './app.js?v=20260805-3',
-  './api-bridge.js?v=20260805-3',
-  './config.js?v=20260805-3',
+  './style.css?v=20260805-4',
+  './overrides-v4.css?v=20260805-4',
+  './app-parts/00.js?v=4',
+  './app-parts/01.js?v=4',
+  './app-parts/02.js?v=4',
+  './app-parts/03.js?v=4',
+  './app-parts/04.js?v=4',
+  './app-parts/05.js?v=4',
+  './app-parts/06.js?v=4',
   './manifest.webmanifest',
   './icon-180.png',
   './icon-192.png',
@@ -37,7 +42,7 @@ self.addEventListener('fetch', event => {
 
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, {cache: 'no-store'})
         .then(response => {
           const copy = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put('./index.html', copy));
