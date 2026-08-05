@@ -1,16 +1,15 @@
 {
-  "id": "./",
+  "id": "/",
   "name": "RIW 2026 — Agenda",
   "short_name": "RIW Agenda",
   "description": "Agenda personalizada do Rio Innovation Week 2026.",
   "lang": "pt-BR",
   "dir": "ltr",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
   "display_override": [
-    "standalone",
-    "minimal-ui"
+    "standalone"
   ],
   "background_color": "#efeee9",
   "theme_color": "#44365f",
@@ -49,5 +48,8 @@
       "short_name": "Diogo",
       "url": "./?perfil=diogo&vista=list"
     }
-  ]
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 }
