@@ -55,7 +55,10 @@ async function proxyAppsScript(request, incomingUrl) {
 
       upstream = await fetch(target.toString(), {
         method: 'GET',
-        headers: {'Accept': 'application/json'},
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'Mozilla/5.0 RIW-Agenda-Proxy/1.0'
+        },
         redirect: 'follow'
       });
     } else {
@@ -70,7 +73,10 @@ async function proxyAppsScript(request, incomingUrl) {
       return jsonResponse({
         ok: false,
         error: 'O Google Apps Script respondeu em formato inesperado.',
-        status: upstream.status
+        status: upstream.status,
+        contentType: upstream.headers.get('content-type') || '',
+        finalUrl: upstream.url || '',
+        preview: text.slice(0, 500)
       }, 502);
     }
 
