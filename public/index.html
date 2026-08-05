@@ -13,6 +13,7 @@
 <meta content="default" name="apple-mobile-web-app-status-bar-style"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <link href="style.css?v=20260805-4" rel="stylesheet"/>
+<link href="overrides-v4.css?v=20260805-4" rel="stylesheet"/>
 </head>
 <body>
 <main class="app">
@@ -31,23 +32,12 @@
 </button>
 </div>
 <div class="nav-row">
-<div aria-label="Modo de visualização" class="view-toggle">
-<button class="view-button active" id="listViewButton" type="button">Lista</button>
-<button class="view-button" id="gridViewButton" type="button">Agenda</button>
-</div>
+<div aria-label="Modo de visualização" class="view-toggle"><button class="view-button active" id="listViewButton" type="button">Lista</button><button class="view-button" id="gridViewButton" type="button">Agenda</button></div>
 <button aria-controls="filtersPanel" aria-expanded="false" class="filters-toggle" id="filtersToggle" type="button">Filtros <span class="filter-count" id="filterCount">0</span></button>
 </div>
 <div aria-label="Dias do evento" class="day-picker" id="dayPicker"></div>
 </header>
-<section aria-label="Instalar aplicativo" class="install-banner" hidden="" id="installBanner">
-<div class="install-copy">
-<strong>Instalar como aplicativo</strong>
-<span>Abre em janela própria, sem a barra de endereço do navegador.</span>
-</div>
-<button class="install-action" id="installAction" type="button">Instalar</button>
-<button aria-label="Dispensar sugestão" class="install-dismiss" id="installDismiss" type="button">×</button>
-<p class="install-help">Abrir este endereço normalmente continuará usando o Chrome. Para ter janela própria, toque em <b>Instalar</b> ou use o menu ⋮ do Chrome e escolha <b>Instalar app</b>. Depois, abra sempre pelo novo ícone criado na tela inicial.</p>
-</section>
+<section aria-label="Instalar aplicativo" class="install-banner" hidden="" id="installBanner"><div class="install-copy"><strong>Instalar como aplicativo</strong><span>Abre em janela própria, sem a barra de endereço do navegador.</span></div><button class="install-action" id="installAction" type="button">Instalar</button><button aria-label="Dispensar sugestão" class="install-dismiss" id="installDismiss" type="button">×</button><p class="install-help">Abrir este endereço normalmente continuará usando o Chrome. Para ter janela própria, toque em <b>Instalar</b> ou use o menu ⋮ do Chrome e escolha <b>Instalar app</b>. Depois, abra sempre pelo novo ícone criado na tela inicial.</p></section>
 <section aria-label="Filtros da agenda" class="filters-panel" id="filtersPanel">
 <div class="filters-head"><h2>Filtrar programação</h2><button class="clear-filters" id="clearFilters" type="button">Limpar filtros</button></div>
 <div class="controls-grid">
