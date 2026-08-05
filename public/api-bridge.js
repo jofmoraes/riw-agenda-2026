@@ -15,7 +15,7 @@
     };
 
     if (isWrite) {
-      options.headers['Content-Type']'] = 'application/json';
+      options.headers['Content-Type'] = 'application/json';
       options.body = JSON.stringify({api: action, ...params});
     } else {
       url.searchParams.set('api', action);
