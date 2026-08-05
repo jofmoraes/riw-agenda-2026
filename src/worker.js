@@ -55,10 +55,7 @@ async function proxyAppsScript(request, incomingUrl) {
 
       upstream = await fetch(target.toString(), {
         method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'User-Agent': 'Mozilla/5.0 RIW-Agenda-Proxy/1.0'
-        },
+        headers: {'Accept': 'application/json'},
         redirect: 'follow'
       });
     } else {
@@ -70,13 +67,13 @@ async function proxyAppsScript(request, incomingUrl) {
     try {
       payload = JSON.parse(text);
     } catch (error) {
+      const finalUrl = String(upstream.url || '');
+      const requiresLogin = finalUrl.includes('accounts.google.com') || /<title>\s*Sign in/i.test(text);
       return jsonResponse({
         ok: false,
-        error: 'O Google Apps Script respondeu em formato inesperado.',
-        status: upstream.status,
-        contentType: upstream.headers.get('content-type') || '',
-        finalUrl: upstream.url || '',
-        preview: text.slice(0, 500)
+        error: requiresLogin
+          ? 'O Google Apps Script está exigindo login. Edite a implantação para executar como você e permitir acesso a qualquer pessoa, inclusive sem login.'
+          : 'O Google Apps Script respondeu em formato inesperado.'
       }, 502);
     }
 
