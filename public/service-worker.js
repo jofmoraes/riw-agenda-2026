@@ -1,11 +1,11 @@
-const CACHE_NAME = 'riw-agenda-shell-v4';
+const CACHE_NAME = 'riw-agenda-shell-v5';
 const SHELL = [
   './',
   './index.html',
   './style.css',
-  './app.js?v=20260805-2',
-  './api-bridge.js?v=20260805-2',
-  './config.js?v=20260805-2',
+  './app.js?v=20260805-3',
+  './api-bridge.js?v=20260805-3',
+  './config.js?v=20260805-3',
   './manifest.webmanifest',
   './icon-180.png',
   './icon-192.png',
