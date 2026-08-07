@@ -23,10 +23,7 @@ function eventDateTime(event, timeValue) {
     : null;
 }
 
-function eventStartDateTime(event) {
-  return eventDateTime(event, event.start);
-}
-
+function eventStartDateTime(event) { return eventDateTime(event, event.start); }
 function eventEndDateTime(event) {
   const direct = eventDateTime(event, event.end);
   if (direct) return direct;
@@ -34,15 +31,10 @@ function eventEndDateTime(event) {
   return start ? new Date(start.getTime() + (Number(event.duration) || 45) * 60000) : null;
 }
 
-function selectedDays() {
-  return DAYS.filter(day => state.selectedDays.has(day));
-}
+function selectedDays() { return DAYS.filter(day => state.selectedDays.has(day)); }
 
 function splitTags(value) {
-  return String(value || '')
-    .split(';')
-    .map(tag => tag.trim())
-    .filter(Boolean);
+  return String(value || '').split(';').map(tag => tag.trim()).filter(Boolean);
 }
 
 function uniqueSorted(values) {
@@ -56,13 +48,8 @@ function uniqueSorted(values) {
   return [...map.values()].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 }
 
-function profileSlugFromUrl() {
-  return new URLSearchParams(location.search).get('perfil')?.toLowerCase() || '';
-}
-
-function initialProfileSlug() {
-  return profileSlugFromUrl() || localStorage.getItem(LAST_PROFILE_KEY) || '';
-}
+function profileSlugFromUrl() { return new URLSearchParams(location.search).get('perfil')?.toLowerCase() || ''; }
+function initialProfileSlug() { return profileSlugFromUrl() || localStorage.getItem(LAST_PROFILE_KEY) || ''; }
 
 function setProfileUrl(slug, clearFilters = false) {
   const url = new URL(location.href);
@@ -71,9 +58,7 @@ function setProfileUrl(slug, clearFilters = false) {
   history.replaceState({}, '', url);
 }
 
-function settingsKey(slug) {
-  return `${SETTINGS_PREFIX}${slug}`;
-}
+function settingsKey(slug) { return `${SETTINGS_PREFIX}${slug}`; }
 
 function defaultDayForEvents(events) {
   const now = new Date();
@@ -91,33 +76,28 @@ function resetStateForProfile() {
   state.priority = '';
   state.potential = '';
   state.audioRoom = '';
+  state.space = '';
+  state.stage = '';
   state.timeMode = '';
   state.timeFrom = '';
   state.timeTo = '';
   state.visibleStatuses = new Set(DEFAULT_VISIBLE_STATUSES);
   state.view = 'list';
   state.expanded = new Set();
-  state.hideUnscheduled = state.view === 'grid';
+  state.hideUnscheduled = false;
   state.conflictsOnly = false;
+  state.filtersOpen = false;
   state.reviewMode = false;
   state.reviewSnapshot = null;
 }
 
 function serializableSettings() {
   return {
-    selectedDays: selectedDays(),
-    search: state.search,
-    tag: state.tag,
-    priority: state.priority,
-    potential: state.potential,
-    audioRoom: state.audioRoom,
-    timeMode: state.timeMode,
-    timeFrom: state.timeFrom,
-    timeTo: state.timeTo,
+    selectedDays: selectedDays(), search: state.search, tag: state.tag, priority: state.priority,
+    potential: state.potential, audioRoom: state.audioRoom, space: state.space, stage: state.stage,
+    timeMode: state.timeMode, timeFrom: state.timeFrom, timeTo: state.timeTo,
     visibleStatuses: STATUS_OPTIONS.filter(status => state.visibleStatuses.has(status)),
-    view: state.view,
-    hideUnscheduled: state.hideUnscheduled,
-    conflictsOnly: state.conflictsOnly
+    view: state.view, hideUnscheduled: state.hideUnscheduled, conflictsOnly: state.conflictsOnly
   };
 }
 
@@ -130,13 +110,15 @@ function applySettings(settings) {
   state.priority = String(settings.priority || '');
   state.potential = String(settings.potential || '');
   state.audioRoom = String(settings.audioRoom || '');
+  state.space = String(settings.space || '');
+  state.stage = String(settings.stage || '');
   state.timeMode = String(settings.timeMode || '');
   state.timeFrom = String(settings.timeFrom || '');
   state.timeTo = String(settings.timeTo || '');
-  const statuses = Array.isArray(settings.visibleStatuses)
-    ? settings.visibleStatuses.map(normalizeDecision).filter(status => STATUS_OPTIONS.includes(status))
-    : [];
-  if (statuses.length) state.visibleStatuses = new Set(statuses);
+  if (Array.isArray(settings.visibleStatuses)) {
+    const statuses = settings.visibleStatuses.map(normalizeDecision).filter(status => STATUS_OPTIONS.includes(status));
+    state.visibleStatuses = new Set(statuses);
+  }
   if (['list', 'grid'].includes(settings.view)) state.view = settings.view;
   state.hideUnscheduled = Boolean(settings.hideUnscheduled);
   state.conflictsOnly = Boolean(settings.conflictsOnly);
@@ -146,28 +128,25 @@ function loadSavedSettings() {
   try {
     const raw = localStorage.getItem(settingsKey(state.profile.slug));
     if (raw) applySettings(JSON.parse(raw));
-  } catch (error) {
-    console.warn('Não foi possível carregar preferências locais.', error);
-  }
+  } catch (error) { console.warn('Não foi possível carregar preferências locais.', error); }
 }
 
 function applyUrlSettings() {
   const params = new URLSearchParams(location.search);
   const days = (params.get('dias') || '').split(',').filter(day => DAYS.includes(day));
   if (days.length) state.selectedDays = new Set(days);
-
-  const statuses = (params.get('status') || '')
-    .split('|')
-    .map(normalizeDecision)
-    .filter(status => STATUS_OPTIONS.includes(status));
-  if (statuses.length) state.visibleStatuses = new Set(statuses);
-
+  if (params.has('status')) {
+    const statuses = (params.get('status') || '').split('|').map(normalizeDecision).filter(status => STATUS_OPTIONS.includes(status));
+    state.visibleStatuses = new Set(statuses);
+  }
   if (['list', 'grid'].includes(params.get('vista'))) state.view = params.get('vista');
   if (params.has('q')) state.search = params.get('q') || '';
   if (params.has('tag')) state.tag = params.get('tag') || '';
   if (params.has('prioridade')) state.priority = params.get('prioridade') || '';
   if (params.has('aderencia')) state.potential = params.get('aderencia') || '';
   if (params.has('audio')) state.audioRoom = params.get('audio') || '';
+  if (params.has('espaco')) state.space = params.get('espaco') || '';
+  if (params.has('palco')) state.stage = params.get('palco') || '';
   if (params.has('tempo')) state.timeMode = params.get('tempo') || '';
   if (params.has('de')) state.timeFrom = params.get('de') || '';
   if (params.has('ate')) state.timeTo = params.get('ate') || '';
@@ -181,9 +160,7 @@ function persistState() {
   try {
     localStorage.setItem(LAST_PROFILE_KEY, state.profile.slug);
     localStorage.setItem(settingsKey(state.profile.slug), JSON.stringify(settings));
-  } catch (error) {
-    console.warn('Não foi possível salvar preferências locais.', error);
-  }
+  } catch (error) { console.warn('Não foi possível salvar preferências locais.', error); }
 
   const url = new URL(location.href);
   url.search = '';
@@ -196,6 +173,8 @@ function persistState() {
   if (state.priority) url.searchParams.set('prioridade', state.priority);
   if (state.potential) url.searchParams.set('aderencia', state.potential);
   if (state.audioRoom) url.searchParams.set('audio', state.audioRoom);
+  if (state.space) url.searchParams.set('espaco', state.space);
+  if (state.stage) url.searchParams.set('palco', state.stage);
   if (state.timeMode) url.searchParams.set('tempo', state.timeMode);
   if (state.timeFrom) url.searchParams.set('de', state.timeFrom);
   if (state.timeTo) url.searchParams.set('ate', state.timeTo);
