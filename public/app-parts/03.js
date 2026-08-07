@@ -7,16 +7,8 @@ function overlaps(a, b) {
 }
 
 function hasConflict(event, candidates = state.events) {
-  // Conflito é sempre recalculado a partir das decisões atuais do usuário.
-  // O antigo conflictGroup da planilha é apenas histórico e não deve manter
-  // um conflito depois que uma das palestras passa para Não vou, Talvez etc.
   if (!PHYSICAL_INTEREST_STATUSES.has(decision(event))) return false;
-  return candidates.some(other =>
-    other.id !== event.id &&
-    other.day === event.day &&
-    PHYSICAL_INTEREST_STATUSES.has(decision(other)) &&
-    overlaps(event, other)
-  );
+  return candidates.some(other => other.id !== event.id && other.day === event.day && PHYSICAL_INTEREST_STATUSES.has(decision(other)) && overlaps(event, other));
 }
 
 function filteredEvents() {
@@ -28,7 +20,9 @@ function filteredEvents() {
 
   let output = state.events.filter(event => {
     if (!state.selectedDays.has(event.day)) return false;
-    if (!state.visibleStatuses.has(decision(event))) return false;
+    // Busca livre é um modo de consulta da programação: ela não exige que o
+    // evento pertença aos níveis de interesse selecionados na agenda pessoal.
+    if (!query && !state.visibleStatuses.has(decision(event))) return false;
     if (PRIORITY_RANK[event.priority || ''] < minPriority) return false;
 
     const startMinutes = parseTime(event.start);
@@ -46,53 +40,28 @@ function filteredEvents() {
     }
 
     if (state.audioRoom && event.audioRoom !== state.audioRoom) return false;
+    if (state.space && event.space !== state.space) return false;
+    if (state.stage && event.stage !== state.stage) return false;
     if (state.tag && !splitTags(event.tags).includes(state.tag)) return false;
     if (state.potential === 'Muito alto' && event.potential !== 'Muito alto') return false;
     if (state.potential === 'Alto+' && POTENTIAL_RANK[event.potential || ''] < 3) return false;
     if (state.potential === 'Médio+' && POTENTIAL_RANK[event.potential || ''] < 2) return false;
 
     if (query) {
-      const haystack = [
-        event.title,
-        event.speakers,
-        event.organization,
-        event.track,
-        event.macroConference,
-        event.space,
-        event.stage,
-        event.description,
-        event.highlight,
-        event.why,
-        event.comments,
-        event.potentialReason
-      ].join(' ').toLocaleLowerCase('pt-BR');
+      const haystack = [event.title,event.speakers,event.organization,event.track,event.macroConference,event.space,event.stage,event.audioRoom,event.description,event.highlight,event.why,event.comments,event.potentialReason].join(' ').toLocaleLowerCase('pt-BR');
       if (!haystack.includes(query)) return false;
     }
-
     return true;
   });
 
   if (state.conflictsOnly) output = output.filter(event => hasConflict(event, state.events));
-
-  return output.sort((a, b) =>
-    DAYS.indexOf(a.day) - DAYS.indexOf(b.day) ||
-    (a.start || '99:99').localeCompare(b.start || '99:99') ||
-    a.title.localeCompare(b.title, 'pt-BR')
-  );
+  return output.sort((a, b) => DAYS.indexOf(a.day) - DAYS.indexOf(b.day) || (a.start || '99:99').localeCompare(b.start || '99:99') || a.title.localeCompare(b.title, 'pt-BR'));
 }
 
 function eventClasses(event) {
-  return [
-    statusCssClass(decision(event)),
-    hasConflict(event, state.events) ? 'has-time-conflict' : '',
-    event.analysisStatus === 'Novo potencial' ? 'potential' : ''
-  ].filter(Boolean).join(' ');
+  return [statusCssClass(decision(event)), hasConflict(event, state.events) ? 'has-time-conflict' : '', event.analysisStatus === 'Novo potencial' ? 'potential' : ''].filter(Boolean).join(' ');
 }
-
-function decisionOptions(current) {
-  return STATUS_OPTIONS.map(status => `<option value="${esc(status)}" ${status === normalizeDecision(current) ? 'selected' : ''}>${esc(status)}</option>`).join('');
-}
-
+function decisionOptions(current) { return STATUS_OPTIONS.map(status => `<option value="${esc(status)}" ${status === normalizeDecision(current) ? 'selected' : ''}>${esc(status)}</option>`).join(''); }
 function badges(event) {
   const items = [`<span class="badge status-badge ${statusCssClass(decision(event))}">${esc(decision(event))}</span>`];
   if (hasConflict(event, state.events)) items.push('<span class="badge conflict-badge">Conflito de horário</span>');
@@ -101,22 +70,12 @@ function badges(event) {
   if (event.audioRoom) items.push('<span class="badge audio-badge">Áudio disponível</span>');
   return items.join('');
 }
-
 function tagsHtml(tags) {
   const list = splitTags(tags);
-  return list.length ? `
-    <div class="detail-block">
-      <h3>Tags</h3>
-      <div class="tag-list">${list.map(tag => `<span class="tag">${esc(tag)}</span>`).join('')}</div>
-    </div>
-  ` : '';
+  return list.length ? `<div class="detail-block"><h3>Tags</h3><div class="tag-list">${list.map(tag => `<span class="tag">${esc(tag)}</span>`).join('')}</div></div>` : '';
 }
-
 function details(event) {
-  const source = event.source && /^https?:/i.test(event.source)
-    ? `<a class="source-link" href="${esc(event.source)}" target="_blank" rel="noopener">Abrir fonte</a>`
-    : esc(event.source || '');
-
+  const source = event.source && /^https?:/i.test(event.source) ? `<a class="source-link" href="${esc(event.source)}" target="_blank" rel="noopener">Abrir fonte</a>` : esc(event.source || '');
   return `
     ${event.audioRoom ? `<div class="detail-block"><h3>Sala de áudio no app</h3><p><strong>${esc(event.audioRoom)}</strong>${event.audioConfidence ? `\n${esc(event.audioConfidence)}` : ''}</p></div>` : ''}
     ${event.speakers ? `<div class="detail-block"><h3>Palestrantes</h3><p>${esc(event.speakers)}</p></div>` : ''}
@@ -129,10 +88,5 @@ function details(event) {
     ${event.alternative ? `<div class="detail-block"><h3>Alternativa</h3><p>${esc(event.alternative)}</p></div>` : ''}
     ${event.statusInfo ? `<div class="detail-block"><h3>Status da informação</h3><p>${esc(event.statusInfo)}</p></div>` : ''}
     ${source ? `<div class="detail-block"><h3>Fonte</h3><p>${source}</p></div>` : ''}
-    <div class="detail-block">
-      <h3>Comentários / perguntas</h3>
-      <textarea class="comments-input">${esc(event.comments)}</textarea>
-      <div class="save-row"><button class="save-button" type="button">Salvar comentário</button><span class="save-status"></span></div>
-    </div>
-  `;
+    <div class="detail-block"><h3>Comentários / perguntas</h3><textarea class="comments-input">${esc(event.comments)}</textarea><div class="save-row"><button class="save-button" type="button">Salvar comentário</button><span class="save-status"></span></div></div>`;
 }
