@@ -20,10 +20,7 @@ function renderProfileChooser(force = false) {
         ${previewed ? `<div class="profile-preview">${profile.interests ? `<div class="profile-interests"><b>Interesses de referência:</b><br>${esc(profile.interests)}</div>` : '<div class="profile-interests">Interesses ainda não cadastrados.</div>'}<button class="profile-confirm" type="button" data-profile-confirm="${esc(profile.slug)}">${current ? 'Continuar com este perfil' : 'Usar este perfil'}</button></div>` : ''}
       </article>`;
   }).join('') : '<div class="loading">Carregando perfis…</div>';
-
-  el('profileGrid').querySelectorAll('[data-profile-preview]').forEach(button => {
-    button.onclick = () => { state.profileCandidateSlug = button.dataset.profilePreview; renderProfileChooser(true); };
-  });
+  el('profileGrid').querySelectorAll('[data-profile-preview]').forEach(button => { button.onclick = () => { state.profileCandidateSlug = button.dataset.profilePreview; renderProfileChooser(true); }; });
   el('profileGrid').querySelectorAll('[data-profile-confirm]').forEach(button => { button.onclick = () => selectProfile(button.dataset.profileConfirm); });
   if (el('profileClose')) el('profileClose').hidden = !state.profile;
   if (force || !state.profile) el('profileBackdrop').classList.add('open');
@@ -45,13 +42,11 @@ function hydrateLoadedData(data) {
   state.profile = data.selectedProfile || null;
   state.events = (data.events || []).map(event => ({...event, decision: normalizeDecision(event.decision)}));
   if (!state.profile) { renderProfileChooser(true); return; }
-
   const label = state.profile.label || state.profile.name || 'Perfil';
   el('profileTitle').textContent = `Agenda de ${label}`;
   el('profileName').textContent = label;
   el('profileInitial').textContent = label.trim().charAt(0).toUpperCase() || 'P';
   if (el('profileCriteriaButton')) { el('profileCriteriaButton').hidden = false; el('profileCriteriaButton').textContent = 'Interesses considerados'; }
-
   resetStateForProfile();
   loadSavedSettings();
   applyUrlSettings();
@@ -63,15 +58,9 @@ function hydrateLoadedData(data) {
 function loadData(slug) {
   state.hydrated = false;
   el('content').innerHTML = '<div class="loading">Carregando agenda…</div>';
-  apiCall('getAppData', {profile: slug}).then(data => {
-    cacheProfileData(slug, data);
-    hydrateLoadedData(data);
-  }).catch(error => {
+  apiCall('getAppData', {profile: slug}).then(data => { cacheProfileData(slug, data); hydrateLoadedData(data); }).catch(error => {
     const cached = cachedProfileData(slug);
-    if (cached) {
-      hydrateLoadedData(cached);
-      const warning = document.createElement('div'); warning.className = 'error'; warning.textContent = `Modo offline: ${error.message || error}`; el('content').prepend(warning); return;
-    }
+    if (cached) { hydrateLoadedData(cached); const warning = document.createElement('div'); warning.className = 'error'; warning.textContent = `Modo offline: ${error.message || error}`; el('content').prepend(warning); return; }
     el('content').innerHTML = `<div class="error">${esc(error.message || error)}</div>`;
   });
 }
@@ -107,12 +96,7 @@ function renderDayPicker() {
   el('dayPicker').innerHTML = `<button class="day-button ${all ? 'active' : ''}" type="button" data-all>Todos</button>${DAYS.map(day => `<button class="day-button ${state.selectedDays.has(day) ? 'active' : ''}" type="button" data-day="${day}">${day}</button>`).join('')}`;
   el('dayPicker').querySelector('[data-all]').onclick = () => { state.selectedDays = all ? new Set([defaultDayForEvents(state.events)]) : new Set(DAYS); render(); };
   el('dayPicker').querySelectorAll('[data-day]').forEach(button => {
-    button.onclick = () => {
-      const day = button.dataset.day;
-      if (state.selectedDays.has(day) && state.selectedDays.size > 1) state.selectedDays.delete(day);
-      else if (!state.selectedDays.has(day)) state.selectedDays.add(day);
-      render();
-    };
+    button.onclick = () => { const day = button.dataset.day; if (state.selectedDays.has(day) && state.selectedDays.size > 1) state.selectedDays.delete(day); else if (!state.selectedDays.has(day)) state.selectedDays.add(day); render(); };
   });
 }
 
@@ -123,11 +107,8 @@ function statusCssClass(status) {
 
 function renderStatuses() {
   el('statusChecks').innerHTML = STATUS_OPTIONS.map(status => `<label class="status-check ${statusCssClass(status)}"><input type="checkbox" value="${esc(status)}" ${state.visibleStatuses.has(status) ? 'checked' : ''}>${esc(status)}</label>`).join('');
-  el('statusChecks').querySelectorAll('input').forEach(input => {
-    input.onchange = () => { if (input.checked) state.visibleStatuses.add(input.value); else state.visibleStatuses.delete(input.value); state.reviewMode = false; render(); };
-  });
-  const allSelected = STATUS_OPTIONS.every(status => state.visibleStatuses.has(status));
+  el('statusChecks').querySelectorAll('input').forEach(input => { input.onchange = () => { if (input.checked) state.visibleStatuses.add(input.value); else state.visibleStatuses.delete(input.value); state.reviewMode = false; render(); }; });
   const interestSelected = INTEREST_STATUS_OPTIONS.every(status => state.visibleStatuses.has(status)) && !state.visibleStatuses.has('Não vou') && !state.visibleStatuses.has('Não analisado');
-  el('toggleAllStatuses').textContent = allSelected ? 'Limpar seleção' : 'Todos';
+  el('toggleAllStatuses').textContent = 'Todos';
   if (el('selectInterestStatuses')) el('selectInterestStatuses').classList.toggle('active', interestSelected);
 }
