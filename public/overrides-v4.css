@@ -1,129 +1,154 @@
-/* Ajustes de onboarding, clareza e layout — v5 */
-.profile-criteria-button {
-  display: inline-flex;
-  align-items: center;
-  margin-top: 5px;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  color: var(--accent-2);
-  font-size: .7rem;
-  font-weight: 800;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.profile-criteria-button[hidden] { display: none; }
-.decision-field {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 4px;
-}
-.decision-field > span {
-  color: var(--muted);
-  font-size: .65rem;
-  font-weight: 800;
-  letter-spacing: .02em;
-}
-.decision-field select { width: 100%; }
-.modal-decision-field { margin-bottom: 7px; }
-.modal-decision-field .modal-select { margin-bottom: 0; }
-.profile-modal-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-.profile-modal-head h2 { margin: 0 0 4px; }
-.profile-modal-head p { margin: 0; color: var(--muted); font-size: .8rem; line-height: 1.4; }
-.profile-close {
-  flex: 0 0 auto;
-  width: 38px;
-  height: 38px;
+/* Ajustes de onboarding, clareza e layout — v6 */
+.profile-criteria-button { display:inline-flex; align-items:center; margin-top:5px; border:0; padding:0; background:transparent; color:var(--accent-2); font-size:.7rem; font-weight:800; text-decoration:underline; text-underline-offset:2px; }
+.profile-criteria-button[hidden] { display:none; }
+.decision-field { display:flex; min-width:0; flex-direction:column; gap:4px; }
+.decision-field > span { color:var(--muted); font-size:.65rem; font-weight:800; letter-spacing:.02em; }
+.decision-field select { width:100%; }
+.modal-decision-field { margin-bottom:7px; }
+.modal-decision-field .modal-select { margin-bottom:0; }
+.profile-modal-head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:12px; }
+.profile-modal-head h2 { margin:0 0 4px; }
+.profile-modal-head p { margin:0; color:var(--muted); font-size:.8rem; line-height:1.4; }
+.profile-close { flex:0 0 auto; width:38px; height:38px; border:1px solid var(--border); border-radius:999px; background:var(--surface-strong); color:var(--text); font-size:1.1rem; }
+.profile-card { padding:0; overflow:hidden; }
+.profile-card.selected { border-color:var(--accent-2); }
+.profile-card.selected::after { content:none; }
+.profile-card.current::before { content:"Perfil atual"; position:absolute; z-index:2; top:11px; right:42px; border-radius:999px; padding:3px 7px; background:var(--accent); color:#fff; font-size:.6rem; font-weight:800; }
+.profile-card-main { display:flex; width:100%; align-items:flex-start; justify-content:space-between; gap:10px; border:0; padding:12px 13px; background:transparent; color:inherit; text-align:left; }
+.profile-card-copy { display:block; min-width:0; }
+.profile-card-main strong { display:block; padding-right:76px; font-size:.96rem; }
+.profile-preview-hint { display:block; margin-top:5px; color:var(--muted); font-size:.69rem; }
+.profile-card-chevron { color:var(--accent-2); font-size:1rem; font-weight:800; }
+.profile-preview { border-top:1px solid var(--border); padding:0 13px 13px; background:rgba(255,255,255,.44); }
+.profile-interests { display:block; margin-top:0; padding-top:11px; }
+.profile-confirm { width:100%; margin-top:11px; border:0; border-radius:11px; padding:10px 12px; background:var(--accent); color:#fff; font-weight:800; }
+
+.calendar-header { position:static !important; top:auto !important; z-index:1; }
+
+/* Ferramentas rápidas: ficam sempre disponíveis porque são o fluxo principal. */
+.quick-tools {
+  margin: 10px 0;
   border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface-strong);
-  color: var(--text);
-  font-size: 1.1rem;
-}
-.profile-card { padding: 0; overflow: hidden; }
-.profile-card.selected { border-color: var(--accent-2); }
-.profile-card.selected::after { content: none; }
-.profile-card.current::before {
-  content: "Perfil atual";
-  position: absolute;
-  z-index: 2;
-  top: 11px;
-  right: 42px;
-  border-radius: 999px;
-  padding: 3px 7px;
-  background: var(--accent);
-  color: #fff;
-  font-size: .6rem;
-  font-weight: 800;
-}
-.profile-card-main {
-  display: flex;
-  width: 100%;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-  border: 0;
-  padding: 12px 13px;
-  background: transparent;
-  color: inherit;
-  text-align: left;
-}
-.profile-card-copy { display: block; min-width: 0; }
-.profile-card-main strong { display: block; padding-right: 76px; font-size: .96rem; }
-.profile-preview-hint { display: block; margin-top: 5px; color: var(--muted); font-size: .69rem; }
-.profile-card-chevron { color: var(--accent-2); font-size: 1rem; font-weight: 800; }
-.profile-preview {
-  border-top: 1px solid var(--border);
-  padding: 0 13px 13px;
-  background: rgba(255,255,255,.44);
-}
-.profile-interests { display: block; margin-top: 0; padding-top: 11px; }
-.profile-confirm {
-  width: 100%;
-  margin-top: 11px;
-  border: 0;
-  border-radius: 11px;
+  border-radius: 15px;
   padding: 10px 12px;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 800;
+  background: rgba(251,250,247,.95);
+  box-shadow: var(--shadow);
 }
-
-/* O cabeçalho do dia deve ocupar espaço real no calendário, nunca flutuar
-   sobre os eventos. A regra anterior usava sticky no desktop e produzia
-   sobreposição ao rolar ou ao capturar a página inteira. */
-.calendar-header {
-  position: static !important;
-  top: auto !important;
-  z-index: 1;
+.quick-search-control > label,
+.quick-status-head > span {
+  display:block;
+  color:var(--text);
+  font-size:.74rem;
+  font-weight:800;
+  margin-bottom:5px;
 }
+.search-input-wrap { display:flex; gap:6px; align-items:center; }
+.search-input-wrap input { flex:1; min-width:0; }
+.search-input-wrap button {
+  flex:0 0 auto;
+  width:36px;
+  height:36px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--surface-strong);
+  color:var(--muted);
+  font-size:1rem;
+}
+.search-mode-hint { display:block; margin-top:5px; color:var(--accent-2); font-size:.66rem; font-weight:700; line-height:1.3; }
+.quick-status-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:9px; }
+.quick-status-head > span { margin:0; }
+.status-presets { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:5px; }
+.status-presets button {
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:5px 9px;
+  background:var(--surface-strong);
+  color:var(--accent);
+  font-size:.66rem;
+  font-weight:800;
+}
+.status-presets button.active { border-color:var(--accent-2); background:var(--accent-soft); }
+.quick-tools .status-checks { margin-top:7px; }
 
-/* No desktop, o cabeçalho principal também permanece no fluxo normal.
-   Assim, filtros, resumo, legenda e agenda nunca passam por baixo dele. */
+/* Filtros avançados ficam separados da seleção de interesse. */
+.filters-panel { display:none; margin-top:10px; }
+.filters-panel.open { display:block; }
+.filters-head { align-items:flex-start; }
+.filter-subtitle { display:block; margin-top:2px; color:var(--muted); font-size:.68rem; }
+.filter-close {
+  width:36px;
+  height:36px;
+  border:1px solid var(--border);
+  border-radius:999px;
+  background:var(--surface-strong);
+  color:var(--text);
+  font-size:1.05rem;
+}
+.filter-backdrop { display:none; }
+.time-pair { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.time-pair label { display:flex; flex-direction:column; gap:3px; color:var(--muted); font-size:.66rem; font-weight:750; }
+.time-pair input { width:100%; }
+
 @media (min-width: 861px) {
-  .topbar {
-    position: static;
-    top: auto;
+  .topbar { position:static; top:auto; }
+  .quick-tools, .filters-panel, .summary, .legend, .calendar-shell { position:relative; }
+  .filters-panel { z-index:3; }
+  .summary, .legend { z-index:2; }
+  .calendar-shell { z-index:1; }
+  .controls-grid { grid-template-columns:repeat(4, minmax(0,1fr)); }
+  .time-range-control { grid-column:span 1; }
+}
+
+/* No celular, filtros avançados viram um drawer real. Assim o botão funciona
+   mesmo quando o usuário está no meio da agenda e não exige voltar ao topo. */
+@media (max-width: 860px) {
+  body.filters-open { overflow:hidden; }
+  .filter-backdrop.open {
+    display:block;
+    position:fixed;
+    inset:0;
+    z-index:89;
+    background:rgba(24,23,27,.38);
+    backdrop-filter:blur(2px);
   }
   .filters-panel,
-  .summary,
-  .legend,
-  .calendar-shell {
-    position: relative;
+  .filters-panel.open {
+    position:fixed !important;
+    z-index:90 !important;
+    left:8px;
+    right:8px;
+    bottom:8px;
+    top:auto;
+    max-height:min(78vh, 720px);
+    overflow-y:auto;
+    margin:0;
+    border-radius:20px;
+    padding:14px;
+    box-shadow:0 20px 50px rgba(20,18,25,.28);
+    transform:translateY(calc(100% + 30px));
+    opacity:0;
+    pointer-events:none;
+    transition:transform .2s ease, opacity .2s ease;
   }
-  .filters-panel { z-index: 3; }
-  .summary, .legend { z-index: 2; }
-  .calendar-shell { z-index: 1; }
+  .filters-panel.open { transform:translateY(0); opacity:1; pointer-events:auto; }
+  .controls-grid { grid-template-columns:1fr 1fr; }
+  .control.time-range-control { grid-column:1 / -1; }
+  .filters-toggle { white-space:nowrap; }
 }
 
 @media (max-width: 620px) {
-  .profile-criteria-button { font-size: .67rem; }
-  .event-actions { align-items: end; }
+  .profile-criteria-button { font-size:.67rem; }
+  .event-actions { align-items:end; }
+  .quick-tools { padding:9px; }
+  .quick-status-head { align-items:flex-start; flex-direction:column; }
+  .status-presets { justify-content:flex-start; }
+  .controls-grid { grid-template-columns:1fr 1fr; gap:8px; }
+  .control { min-width:0; }
+  .control select, .control input { width:100%; min-width:0; }
+  .filter-subtitle { max-width:250px; }
+}
+
+@media (max-width: 390px) {
+  .controls-grid { grid-template-columns:1fr; }
+  .control.time-range-control { grid-column:auto; }
 }
