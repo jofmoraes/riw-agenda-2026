@@ -10,7 +10,8 @@ const STATUS_OPTIONS = [
   'Não vou',
   'Não analisado'
 ];
-const DEFAULT_VISIBLE_STATUSES = ['Quero ir'];
+const INTEREST_STATUS_OPTIONS = STATUS_OPTIONS.filter(status => !['Não vou', 'Não analisado'].includes(status));
+const DEFAULT_VISIBLE_STATUSES = [...INTEREST_STATUS_OPTIONS];
 const PHYSICAL_INTEREST_STATUSES = new Set(['Quero ir', 'Alto Interesse', 'Interesse']);
 const PRIORITY_RANK = {
   'Bloquear agenda': 4,
@@ -128,7 +129,6 @@ function cachedProfileData(slug) {
   }
 }
 
-
 const state = {
   events: [],
   profiles: [],
@@ -139,6 +139,8 @@ const state = {
   priority: '',
   potential: '',
   audioRoom: '',
+  space: '',
+  stage: '',
   timeMode: '',
   timeFrom: '',
   timeTo: '',
@@ -147,7 +149,7 @@ const state = {
   expanded: new Set(),
   hideUnscheduled: false,
   conflictsOnly: false,
-  filtersOpen: window.matchMedia('(min-width: 861px)').matches,
+  filtersOpen: false,
   reviewMode: false,
   reviewSnapshot: null,
   modalEventId: null,
